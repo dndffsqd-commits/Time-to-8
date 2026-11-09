@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Эпизод 8 — ФИНАЛ</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    background: #000;
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    user-select: none;
+  }
+
+  /* ---------- Заголовок ---------- */
+  h1 {
+    font-size: clamp(1.4rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-align: center;
+    color: #fff;
+    margin-bottom: clamp(2rem, 5vw, 4rem);
+    padding: 0 1rem;
+    text-shadow:
+      0 0 4px  #fff,
+      0 0 10px #fff,
+      0 0 20px #fff,
+      0 0 40px rgba(180, 220, 255, 0.9),
+      0 0 80px rgba(180, 220, 255, 0.6),
+      0 0 120px rgba(180, 220, 255, 0.4);
+    animation: glowPulse 3.5s ease-in-out infinite;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.78; }
+  }
+
+  /* ---------- Таймер ---------- */
+  .timer {
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(0.4rem, 2vw, 1.5rem);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: clamp(2.5rem, 8vw, 6rem);
+  }
+
+  .num {
+    font-size: clamp(2rem, 7vw, 4.8rem);
+    font-weight: 200;
+    line-height: 1;
+    color: #fff;
+    text-shadow:
+      0 0 10px rgba(255, 255, 255, 0.55),
+      0 0 30px rgba(160, 210, 255, 0.35);
+    letter-spacing: 0.02em;
+  }
+
+  .label {
+    margin-top: 0.7rem;
+    font-size: clamp(0.55rem, 1.1vw, 0.8rem);
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .sep {
+    font-size: clamp(2rem, 7vw, 4.8rem);
+    font-weight: 200;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.22);
+    transform: translateY(-2px);
+  }
+
+  /* ---------- Кнопки (скрыты снизу) ---------- */
+  .buttons {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    opacity: 0.05;
+    transition: opacity 0.45s ease;
+    z-index: 10;
+  }
+
+  .buttons:hover,
+  .buttons:focus-within {
+    opacity: 1;
+  }
+
+  .btn {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 0.55rem 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #fff;
+    box-shadow:
+      0 0 15px rgba(255, 255, 255, 0.5),
+      inset 0 0 15px rgba(255, 255, 255, 0.08);
+    color: #fff;
+  }
+
+  @media (max-width: 480px) {
+    .btn {
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      padding: 0.45rem 0.8rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <h1>Эпизод 8 — ФИНАЛ</h1>
+
+  <div class="timer" role="timer" aria-live="polite">
+    <div class="unit">
+      <div class="num" id="days">50</div>
+      <div class="label">Дней</div>
+    </div>
+    <div class="sep">:</div>
+    <div class="unit">
+      <div class="num" id="hours">00</div>
+      <div class="label">Часов</div>
+    </div>
+    <div class="sep">:</div>
+    <div class="unit">
+      <div class="num" id="minutes">00</div>
+      <div class="label">Минут</div>
+    </div>
+    <div class="sep">:</div>
+    <div class="unit">
+      <div class="num" id="seconds">00</div>
+      <div class="label">Секунд</div>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <a class="btn" href="command-side.html">Командная Строка</a>
+    <a class="btn" href="vho.html">НТИВ ШОК</a>
+  </div>
+
+<script>
+  /* ===== 50-дневный таймер ===== */
+  const DURATION = 50 * 24 * 60 * 60 * 1000; // 50 дней в мс
+  const START_KEY = 'episode8_timer_start';
+
+  // Точка старта сохраняется в localStorage,
+  // чтобы отсчёт не сбрасывался при перезагрузке.
+  let start = parseInt(localStorage.getItem(START_KEY), 10);
+  if (!start || isNaN(start)) {
+    start = Date.now();
+    localStorage.setItem(START_KEY, String(start));
+  }
+  const end = start + DURATION;
+
+  const elDays    = document.getElementById('days');
+  const elHours   = document.getElementById('hours');
+  const elMinutes = document.getElementById('minutes');
+  const elSeconds = document.getElementById('seconds');
+
+  const pad = n => String(n).padStart(2, '0');
+
+  function updateTimer() {
+    let left = end - Date.now();
+    if (left < 0) left = 0;
+
+    const days    = Math.floor(left / 86400000);
+    const hours   = Math.floor((left % 86400000) / 3600000);
+    const minutes = Math.floor((left % 3600000) / 60000);
+    const seconds = Math.floor((left % 60000) / 1000);
+
+    elDays.textContent    = pad(days);
+    elHours.textContent   = pad(hours);
+    elMinutes.textContent = pad(minutes);
+    elSeconds.textContent = pad(seconds);
+  }
+
+  updateTimer();
+  setInterval(updateTimer, 1000);
+</script>
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>НТИ Верхоозёрск :: ШОК :: Главная страница</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    background:#4a6a8a;
+    background-image:repeating-linear-gradient(45deg,#4a6a8a 0 7px,#456485 7px 14px);
+    font-family:"Times New Roman", Times, serif;
+    font-size:15px;
+    color:#000;
+  }
+  a { color:#0000EE; }
+  a:visited { color:#551A8B; }
+  a:active { color:#FF0000; }
+
+  .wrap {
+    width:780px; margin:0 auto; background:#ffffff;
+    border-left:2px solid #000; border-right:2px solid #000;
+    box-shadow:0 0 0 4px #3a5670;
+  }
+
+  /* ---------- ШАПКА ---------- */
+  .head {
+    background:linear-gradient(#0a3d6b,#04203c);
+    color:#fff; padding:10px 12px; overflow:hidden;
+    border-bottom:4px double #c9a227;
+  }
+  .emblem {
+    float:left; width:62px; height:62px; margin-right:12px;
+    border:2px solid #c9a227; border-radius:50%;
+    text-align:center; line-height:62px;
+    font:bold 15px/62px Arial, sans-serif; letter-spacing:1px; color:#e2c25c;
+  }
+  .headtxt .h1 { font:bold 19px/1.15 Arial, sans-serif; letter-spacing:.5px; }
+  .headtxt .h2 { font:bold 13px Arial, sans-serif; color:#a9cbe8; margin-top:3px; }
+  .headtxt .h3 { font:11px Arial, sans-serif; color:#8fa8bd; margin-top:4px; }
+
+  /* ---------- МЕНЮ ---------- */
+  .nav {
+    background:#d4d0c8; padding:5px 8px;
+    border-top:1px solid #fff; border-bottom:2px solid #808080;
+    font:12px Arial, sans-serif;
+  }
+  .nav a {
+    display:inline-block; padding:2px 9px; margin:0 3px 2px 0;
+    border:2px outset #f0f0f0; background:#d4d0c8;
+    color:#000; text-decoration:none; font-weight:bold;
+  }
+  .nav a:hover { background:#e8e5df; }
+  .nav a:active { border-style:inset; }
+  .nav a.mirror {
+    background:#000; color:#00ff33; border:2px outset #1a5c1a;
+    font-family:"Courier New", monospace; letter-spacing:1px;
+  }
+
+  /* ---------- БЕГУЩАЯ СТРОКА ---------- */
+  .marq {
+    background:#ffffcc; border-bottom:1px dashed #a00;
+    padding:3px 0; font:12px Arial, sans-serif; color:#900;
+  }
+
+  /* ---------- ТЕЛО ---------- */
+  .body { padding:10px; overflow:hidden; }
+  .left  { float:left;  width:170px; }
+  .right { float:right; width:160px; }
+  .main  { margin-left:180px; margin-right:170px; }
+
+  .box { border:1px solid #999; margin-bottom:10px; }
+  .box h3 {
+    margin:0; background:#003366; color:#fff;
+    font:bold 11px Arial, sans-serif; padding:3px 5px;
+    letter-spacing:.5px;
+  }
+  .box .in { padding:5px 6px; font-size:12px; font-family:Arial, sans-serif; }
+  .box .in ul { margin:0; padding-left:16px; }
+  .box .in li { margin-bottom:2px; }
+
+  .cnt {
+    background:#000; color:#33ff33; font-family:"Courier New", monospace;
+    font-size:11px; padding:1px 2px; border:1px solid #666; margin-right:1px;
+  }
+
+  /* ---------- НОВОСТИ ---------- */
+  .main h2 {
+    font:bold 16px Arial, sans-serif; margin:0 0 8px 0;
+    border-bottom:2px solid #003366; padding-bottom:3px; color:#003366;
+  }
+  .main h2.gold { border-bottom-color:#c9a227; }
+  .news { border-bottom:1px dotted #aaa; padding-bottom:9px; margin-bottom:11px; }
+  .news .date {
+    font:11px Arial, sans-serif; color:#666; letter-spacing:.3px;
+  }
+  .news .ttl { font:bold 14px Arial, sans-serif; margin:2px 0 4px 0; }
+  .news p { margin:0 0 5px 0; text-align:justify; }
+  .news .src { font:11px Arial, sans-serif; color:#777; font-style:italic; }
+
+  .ann { font-size:13px; }
+  .ann li { margin-bottom:6px; }
+
+  /* ---------- БАННЕРЫ ---------- */
+  .banner {
+    border:1px solid #000; margin-bottom:8px; padding:6px 5px;
+    text-align:center; font-family:Arial, sans-serif;
+    text-decoration:none; display:block;
+  }
+  .b1 { background:linear-gradient(#ffd54a,#e8a300); color:#3a2500; }
+  .b2 { background:#000; color:#ff2a2a; border-color:#ff2a2a; }
+  .b3 { background:linear-gradient(#d8e8ff,#9dbfe8); color:#00204a; }
+  .banner .big { font-size:12px; font-weight:bold; }
+  .banner .small { font-size:10px; margin-top:2px; }
+
+  .blink { animation:blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity:0; } }
+
+  /* ---------- ПОДВАЛ ---------- */
+  .footer {
+    background:#dedede; border-top:3px double #808080;
+    padding:8px 12px 10px 12px; text-align:center;
+    font:11px Arial, sans-serif; color:#555;
+  }
+  .footer .hr { color:#999; margin:5px 0; }
+  .author { color:#d2d2d2; font-size:10px; }
+
+  /* ---------- ЗЕРКАЛО ---------- */
+  body.mirror { background:#000; background-image:none; }
+  body.mirror .wrap { background:#080d08; border-color:#1f5f1f; box-shadow:0 0 0 4px #061206; color:#6fcf6f; }
+  body.mirror a, body.mirror a:visited { color:#5f5; }
+  body.mirror .head { background:linear-gradient(#00180a,#000); border-bottom-color:#1f5f1f; }
+  body.mirror .headtxt .h1 { color:#9f9; }
+  body.mirror .headtxt .h2 { color:#4a8a4a; }
+  body.mirror .headtxt .h3 { color:#2f5f2f; }
+  body.mirror .emblem { border-color:#1f5f1f; color:#4a8a4a; }
+  body.mirror .nav { background:#0a120a; border-top-color:#1f5f1f; border-bottom-color:#1f5f1f; }
+  body.mirror .nav a { background:#0a1a0a; color:#7f7; border-color:#1f5f1f; }
+  body.mirror .nav a:hover { background:#123012; }
+  body.mirror .marq { background:#001a00; color:#8f8; border-bottom-color:#1f5f1f; }
+  body.mirror .box { border-color:#1f5f1f; }
+  body.mirror .box h3 { background:#0a1a0a; color:#7f7; }
+  body.mirror .main h2 { color:#8f8; border-bottom-color:#1f5f1f; }
+  body.mirror .news { border-bottom-color:#1a3a1a; }
+  body.mirror .news .date, body.mirror .news .src { color:#2f6f2f; }
+  body.mirror .footer { background:#050a05; border-top-color:#1f5f1f; color:#2f5f2f; }
+  body.mirror .author { color:#14240f; }
+  body.mirror .b1, body.mirror .b2, body.mirror .b3 {
+    background:#041004; color:#7f7; border-color:#1f5f1f;
+  }
+  .mono { font-family:"Courier New", monospace; }
+</style>
+</head>
+<body>
+
+<!-- ============================ ОРИГИНАЛ ============================ -->
+<div id="p-main">
+<div class="wrap">
+
+  <div class="head">
+    <div class="emblem">ШОК</div>
+    <div class="headtxt">
+      <div class="h1">НАУЧНО-ТЕХНИЧЕСКИЙ ИНСТИТУТ ВЕРХООЗЁРСКА</div>
+      <div class="h2">Штаб Опытного Конструирования (ШОК)</div>
+      <div class="h3">Основан в 1961 г. &middot; г. Верхоозёрск-4 &middot; в/ч 44718 &middot; тел. 2-10-04</div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a href="#" onclick="return dead('Главная')">ГЛАВНАЯ</a>
+    <a href="#" onclick="return dead('Новости')">НОВОСТИ</a>
+    <a href="#" onclick="return dead('Институт')">ИНСТИТУТ</a>
+    <a href="#" onclick="return dead('Разработки')">РАЗРАБОТКИ</a>
+    <a href="#" onclick="return dead('Публикации')">ПУБЛИКАЦИИ</a>
+    <a href="#" onclick="return dead('Гостевая книга')">ГОСТЕВАЯ</a>
+    <a href="#" onclick="return dead('Контакты')">КОНТАКТЫ</a>
+    <a class="mirror" href="#mirror">ЗЕРКАЛО</a>
+  </div>
+
+  <div class="marq">
+    <marquee scrollamount="4" behavior="scroll">
+      &#9654; ВНИМАНИЕ: с 20 августа 2001 г. вход на территорию института — строго по пропускам с фотографией. &#9654; Приём документов в аспирантуру продлён до 31 августа. &#9654; ВЦ: не сохраняйте личные файлы в каталоге /TMP. &#9654; Сайт обновлён 20.08.2001 в 16:45.
+    </marquee>
+  </div>
+
+  <div class="body">
+
+    <!-- ЛЕВАЯ КОЛОНКА -->
+    <div class="left">
+
+      <div class="box">
+        <h3>РАЗДЕЛЫ САЙТА</h3>
+        <div class="in">
+          <ul>
+            <li><a href="#" onclick="return dead('История')">История института</a></li>
+            <li><a href="#" onclick="return dead('Отделы')">Отделы и лаборатории</a></li>
+            <li><a href="#" onclick="return dead('Сотрудники')">Сотрудники</a></li>
+            <li><a href="#" onclick="return dead('Диссертации')">Диссертации</a></li>
+            <li><a href="#" onclick="return dead('Фотогалерея')">Фотогалерея</a></li>
+            <li><a href="#" onclick="return dead('Доска объявлений')">Доска объявлений</a></li>
+            <li><a href="#" onclick="return dead('Ссылки')">Полезные ссылки</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="box">
+        <h3>ГОЛОСОВАНИЕ</h3>
+        <div class="in">
+          Нужен ли институту новый корпус?
+          <div style="margin-top:4px">
+            <label><input type="radio" name="v"> Да, конечно</label><br>
+            <label><input type="radio" name="v"> Скорее да</label><br>
+            <label><input type="radio" name="v"> Затрудняюсь</label>
+          </div>
+          <div style="margin-top:5px">
+            <a href="#" onclick="return dead('Голосование')" style="border:1px solid #666;background:#d4d0c8;padding:1px 8px;text-decoration:none;color:#000;font-size:11px">Голосовать</a>
+          </div>
+          <div style="margin-top:4px;font-size:10px;color:#777">Всего проголосовало: 38</div>
+        </div>
+      </div>
+
+      <div class="box">
+        <h3>СЧЁТЧИК</h3>
+        <div class="in" style="text-align:center">
+          <span class="cnt">0</span><span class="cnt">0</span><span class="cnt">1</span><span class="cnt">4</span><span class="cnt">7</span><span class="cnt">3</span><span class="cnt">8</span>
+          <div style="font-size:10px;color:#777;margin-top:4px">Счётчик установлен 14.02.2001</div>
+        </div>
+      </div>
+
+      <div class="box">
+        <h3>О САЙТЕ</h3>
+        <div class="in" style="font-size:10px;line-height:1.35">
+          Сайт оптимизирован для просмотра в <b>Netscape Navigator 4.7</b> и <b>Internet Explorer 5.0</b> при разрешении <b>800&times;600</b>, 256 цветов.
+          <div style="margin-top:5px">Сервер: Apache/1.3.20 (Unix)</div>
+          <div style="margin-top:4px;border:1px solid #999;padding:2px;text-align:center">BEST VIEWED<br>WITH ANY BROWSER</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ПРАВАЯ КОЛОНКА -->
+    <div class="right">
+      <a class="banner b1" href="#" onclick="return dead('Реклама')">
+        <div class="big">ВЕРХООЗЁРСК&shy;ТЕЛЕКОМ</div>
+        <div class="small">ДОСТУП В ИНТЕРНЕТ<br>от 0,90 р./час<br>т. 2-00-99</div>
+      </a>
+
+      <a class="banner b2" href="#" onclick="return dead('Реклама')">
+        <div class="big blink">!!! ВНИМАНИЕ !!!</div>
+        <div class="small">ПРОВЕРКА ПРОПУСКОВ<br>С 20.08.2001<br>БЮРО ПРОПУСКОВ, КОМН. 102</div>
+      </a>
+
+      <a class="banner b3" href="#" onclick="return dead('Реклама')">
+        <div class="big">ТРЕБУЕТСЯ</div>
+        <div class="small">ИНЖЕНЕР-ПРОГРАММИСТ<br>Delphi 5, C++, Clipper<br>отдел кадров, комн. 210</div>
+      </a>
+
+      <div class="box">
+        <h3>ПОГОДА</h3>
+        <div class="in" style="font-size:11px">
+          <b>Верхоозёрск</b><br>
+          20 августа: +14&deg;C<br>
+          облачно, без осадков<br>
+          ветер СЗ, 3 м/с
+        </div>
+      </div>
+
+      <div class="box">
+        <h3>ДЕЖУРНЫЙ</h3>
+        <div class="in" style="font-size:11px">
+          По институту:<br>
+          <b>Кузьминых Р. С.</b><br>
+          комн. 118, тел. 2-11-18
+        </div>
+      </div>
+    </div>
+
+    <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА -->
+    <div class="main">
+
+      <h2>НОВОСТИ ИНСТИТУТА &mdash; 20 августа 2001 г.</h2>
+
+      <div class="news">
+        <div class="date">20.08.2001, 16:40 &middot; Отдел №3</div>
+        <div class="ttl">Стендовые испытания комплекса «Гранит-7» завершены досрочно</div>
+        <p>Коллектив отдела №3 под руководством к.&nbsp;т.&nbsp;н. Кузьминых&nbsp;Р.&nbsp;С. завершил полный цикл стендовых испытаний измерительного комплекса «Гранит-7». Проверены все 47 контрольных точек, отклонений в допусках не выявлено. Результаты оформлены в трёх экземплярах и переданы в спецчасть.</p>
+        <p>Коллективу отдела объявлена благодарность приказом № 214 от 20.08.2001.</p>
+      </div>
+
+      <div class="news">
+        <div class="date">20.08.2001, 11:05 &middot; АХО</div>
+        <div class="ttl">Отключение горячей воды в корпусе «Б»</div>
+        <p>С 22 по 27 августа в корпусе «Б» будет отключена горячая вода в связи с опрессовкой систем. Просьба к сотрудникам не пользоваться душевыми на 2-м этаже. Приносим извинения за временные неудобства.</p>
+      </div>
+
+      <div class="news">
+        <div class="date">20.08.2001, 09:00 &middot; Вычислительный центр</div>
+        <div class="ttl">В ВЦ установлен новый накопитель на жёстких дисках</div>
+        <p>В вычислительном центре института введён в эксплуатацию жёсткий диск объёмом <b>1,2 ГБ</b>. Свободное место на момент публикации — 640 МБ. Убедительная просьба не сохранять личные файлы в каталоге <span class="mono">/TMP</span> и не удалять файлы из каталога <span class="mono">/PUB</span>.</p>
+        <p class="src">Резервное копирование — по вторникам, с 14:00.</p>
+      </div>
+
+      <div class="news">
+        <div class="date">19.08.2001 &middot; Профком</div>
+        <div class="ttl">Итоги субботника</div>
+        <p>В субботу, 18 августа, сотрудники института вышли на общегородской субботник. Собрано 4 тонны макулатуры и 1,5 тонны металлолома. Отдельно отмечена бригада отдела №7, работавшая на территории гаражей. Фотографии будут размещены в фотогалерее (раздел в разработке).</p>
+      </div>
+
+      <div class="news">
+        <div class="date">18.08.2001 &middot; Аспирантура</div>
+        <div class="ttl">Продлён приём документов в аспирантуру</div>
+        <p>Приём документов в аспирантуру по специальностям 05.13.01, 05.13.11 и 01.02.05 продлён до <b>31 августа 2001 года</b>. Документы принимаются в комнате 205 с 10:00 до 16:00 (обед 13:00&ndash;14:00). Вступительные экзамены — с 3 сентября.</p>
+      </div>
+
+      <div class="news">
+        <div class="date">17.08.2001 &middot; Режим</div>
+        <div class="ttl">О пропускном режиме с 20 августа</div>
+        <p>С 20 августа вход на территорию института осуществляется строго по пропускам с фотографией. Временные пропуска выдаются в бюро пропусков (комн. 102) при предъявлении документа, удостоверяющего личность. Посетители сопровождаются сотрудником института.</p>
+      </div>
+
+      <h2 class="gold" style="margin-top:18px">ОБЪЯВЛЕНИЯ</h2>
+      <ul class="ann">
+        <li><b>Потерян пропуск</b> серии ВО-4 № 0128856 на имя Смирновой&nbsp;Т.&nbsp;А. Просьба вернуть в бюро пропусков, комн. 102.</li>
+        <li><b>Продаётся ЭВМ «Искра-1030»</b>, в рабочем состоянии, с комплектом документации. Тел. 2-14-88, после 18:00, Сергей.</li>
+        <li><b>Отдам котят</b> в хорошие руки, 3 шт., к лотку приучены. Комн. 317.</li>
+        <li><b>Ищу соседа по комнате</b> в общежитии, корпус 2. Условия: не курит, тихий. Комн. 412.</li>
+      </ul>
+
+    </div>
+
+    <div style="clear:both"></div>
+  </div>
+
+  <div class="footer">
+    &copy; 2001 Научно-технический институт Верхоозёрска. Все права защищены.<br>
+    При использовании материалов ссылка на сайт обязательна.
+    <div class="hr">&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</div>
+    Сайт создан и поддерживается группой ВЦ института.<br>
+    Последнее обновление: 20.08.2001, 16:45. Хостинг: ВерхоозёрскТелеком.<br><br>
+    <span class="author">Ильич Алексей Павлович</span>
+  </div>
+
+</div>
+</div>
+
+<!-- ============================ ЗЕРКАЛО ============================ -->
+
+<script>
+function dead(name) {
+  alert('Раздел «' + name + '» находится в разработке.\n\nСервер вернул: 404 Not Found');
+  return false;
+}
+
+function route() {
+  var isMirror = (location.hash === '#mirror');
+  document.getElementById('p-main').style.display   = isMirror ? 'none' : 'block';
+  document.getElementById('p-mirror').style.display = isMirror ? 'block' : 'none';
+  document.body.className = isMirror ? 'mirror' : '';
+  document.title = isMirror
+    ? 'НТИ Верхоозёрск :: ЗЕРКАЛО'
+    : 'НТИ Верхоозёрск :: ШОК :: Главная страница';
+  window.scrollTo(0, 0);
+}
+
+window.addEventListener('hashchange', route);
+route();
+</script>
+
+</body>
+</html>
