@@ -95,6 +95,16 @@
     transform: translateY(-2px);
   }
 
+  /* ---------- Служебная подпись ---------- */
+  .boot-note {
+    margin-top: clamp(1.6rem, 3.5vw, 2.6rem);
+    font-size: 0.65rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.25);
+    text-align: center;
+  }
+
   /* ---------- Кнопки (скрыты снизу) ---------- */
   .buttons {
     position: fixed;
@@ -172,35 +182,43 @@
     </div>
   </div>
 
+  <div class="boot-note" id="bootNote">SYNC · 2026-11-10 00:00 IKT</div>
+
   <div class="buttons">
     <a class="btn" href="command-side.html">Командная Строка</a>
     <a class="btn" href="vho.html">НТИВ ШОК</a>
   </div>
 
 <script>
-  /* ===== 50-дневный таймер ===== */
-  const DURATION = 50 * 24 * 60 * 60 * 1000; // 50 дней в мс
-  const START_KEY = 'episode8_timer_start';
+  /* =========================================================
+     50-дневный таймер с ФИКСИРОВАННОЙ точкой старта.
+     Старт: 10 ноября 2026, 00:00 по Иркутску (UTC+8).
+     Все устройства видят одинаковый отсчёт,
+     независимо от того, когда именно открыли сайт.
+     ========================================================= */
 
-  // Точка старта сохраняется в localStorage,
-  // чтобы отсчёт не сбрасывался при перезагрузке.
-  let start = parseInt(localStorage.getItem(START_KEY), 10);
-  if (!start || isNaN(start)) {
-    start = Date.now();
-    localStorage.setItem(START_KEY, String(start));
-  }
-  const end = start + DURATION;
+  // Явно задаём смещение +08:00 — Иркутск (UTC+8, без перехода на летнее время).
+  const START_ISO = '2026-11-10T00:00:00+08:00';
+  const START     = Date.parse(START_ISO);              // мс, UTC
+  const DURATION  = 50 * 24 * 60 * 60 * 1000;           // ровно 50 дней
+  const END       = START + DURATION;                   // момент финала
 
   const elDays    = document.getElementById('days');
   const elHours   = document.getElementById('hours');
   const elMinutes = document.getElementById('minutes');
   const elSeconds = document.getElementById('seconds');
+  const bootNote  = document.getElementById('bootNote');
 
   const pad = n => String(n).padStart(2, '0');
 
   function updateTimer() {
-    let left = end - Date.now();
-    if (left < 0) left = 0;
+    const now = Date.now();
+
+    // До старта — показываем полный запас (50:00:00:00).
+    // После финала — 00:00:00:00.
+    let left = END - now;
+    if (left > DURATION) left = DURATION;
+    if (left < 0)        left = 0;
 
     const days    = Math.floor(left / 86400000);
     const hours   = Math.floor((left % 86400000) / 3600000);
@@ -211,6 +229,15 @@
     elHours.textContent   = pad(hours);
     elMinutes.textContent = pad(minutes);
     elSeconds.textContent = pad(seconds);
+
+    // Маленькая подпись под таймером меняется по состоянию
+    if (now < START) {
+      bootNote.textContent = 'SYNC · 2026-11-10 00:00 IKT';
+    } else if (now < END) {
+      bootNote.textContent = 'LIVE · T-MINUS';
+    } else {
+      bootNote.textContent = 'EPISODE 8 · FINALE';
+    }
   }
 
   updateTimer();
