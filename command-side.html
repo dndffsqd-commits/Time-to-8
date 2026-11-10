@@ -92,6 +92,54 @@
     filter:invert(1) hue-rotate(180deg);
     opacity:.85;
   }
+
+  #confirmOverlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.78);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    backdrop-filter:blur(2px);
+  }
+  #confirmOverlay.show{display:flex;}
+  .confirm-box{
+    min-width:min(360px,90vw);
+    background:#050505;
+    border:1px solid #2f2f2f;
+    padding:22px 24px 18px;
+    box-shadow:0 0 30px rgba(142,240,176,.12);
+  }
+  .confirm-box p{
+    color:var(--fg);
+    font-size:14px;
+    letter-spacing:.03em;
+    margin-bottom:18px;
+  }
+  .confirm-btns{
+    display:flex;
+    gap:10px;
+    justify-content:flex-end;
+  }
+  .confirm-btns button{
+    background:transparent;
+    border:1px solid rgba(255,255,255,.35);
+    color:var(--fg);
+    font:inherit;
+    font-size:12px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    padding:7px 16px;
+    cursor:pointer;
+    transition:all .25s ease;
+    border-radius:3px;
+  }
+  .confirm-btns button:hover{
+    border-color:var(--green);
+    color:var(--green);
+    box-shadow:0 0 12px rgba(142,240,176,.35);
+  }
 </style>
 </head>
 <body>
@@ -104,16 +152,22 @@
   </div>
 </div>
 
+<div id="confirmOverlay">
+  <div class="confirm-box">
+    <p>Хотите покинуть этот сайт?</p>
+    <div class="confirm-btns">
+      <button id="confirmOk">ОК</button>
+      <button id="confirmCancel">Отмена</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (function () {
   'use strict';
 
-
-
- 
   const K = 0x5A;
 
-  
   function dec(hex) {
     let s = '';
     for (let i = 0; i < hex.length; i += 2) {
@@ -121,7 +175,6 @@
     }
     return s;
   }
-
 
   function hash(str) {
     let a = 0x811c9dc5, b = 0x811c9dc5, c = 0x811c9dc5, d = 0x811c9dc5;
@@ -139,58 +192,58 @@
   }
 
   const _O = {
-    c1:  '36353d',                                  
-    c2:  '3e332931',                                
-    c3:  '2a32352e35',                             
-    c4:  '29352f343e',                              
-    c5:  '743e283b2d33343d29',                      
-    c6:  '7429233738353629',                        
-    c7:  '743633292e',                              
+    c1:  '36353d',
+    c2:  '3e332931',
+    c3:  '2a32352e35',
+    c4:  '29352f343e',
+    c5:  '743e283b2d33343d29',
+    c6:  '7429233738353629',
+    c7:  '743633292e',
+    c8:  '74332c3f3e31',
 
-    a1:  '77373328283528',                          
-    a2:  '383b293339772939333f342e33292e7a6b',      
-    a3:  '6b',                                     
-    a4:  '6b7729332c34',                            
-    a5:  '6877383b293339772939333f342e33292e',     
-    a6:  '6b6b6a6b',                               
+    a1:  '77373328283528',
+    a2:  '383b293339772939333f342e33292e7a6b',
+    a3:  '6b',
+    a4:  '6b7729332c34',
+    a5:  '6877383b293339772939333f342e33292e',
+    a6:  '6b6b6a6b',
+    a7:  '29332e3f',
 
-    p1:  '0a0c0d09686a6a6b',                        
+    p1:  '0a0c0d09686a6a6b',
 
-    f1:  '2a32352e3529756b742a343d',                
-    f2:  '2a32352e35297568742a343d',                
-    f3:  '2a32352e3529756974170a69',                
-    f4:  '2a32352e3529756e742a343d',                
-    f5:  '2a32352e3529756f726b73742a343d',          
-    f6:  '2a32352e3529756f726873742a343d',          
-    f7:  '2a32352e3529756f726973742a343d'           
+    f1:  '2a32352e3529756b742a343d',
+    f2:  '2a32352e35297568742a343d',
+    f3:  '2a32352e3529756974170a69',
+    f4:  '2a32352e3529756e742a343d',
+    f5:  '2a32352e3529756f726b73742a343d',
+    f6:  '2a32352e3529756f726873742a343d',
+    f7:  '2a32352e3529756f726973742a343d'
   };
 
-  
   const FILE = {
     f1: dec(_O.f1), f2: dec(_O.f2), f3: dec(_O.f3), f4: dec(_O.f4),
     f5: dec(_O.f5), f6: dec(_O.f6), f7: dec(_O.f7)
   };
 
-  
   const T = {};
   for (const k in _O) {
     if (k[0] === 'f') continue;
     T[hash(dec(_O[k]))] = k;
   }
 
-  
   for (const k in _O) delete _O[k];
 
-  /* ---------- DOM ---------- */
   const screenEl = document.getElementById('screen');
   const outputEl = document.getElementById('output');
   const inputEl  = document.getElementById('cmd');
   const PROMPT   = 'IAP:/security/cmd>';
 
-  /* ---------- состояние ---------- */
+  const overlay   = document.getElementById('confirmOverlay');
+  const btnOk     = document.getElementById('confirmOk');
+  const btnCancel = document.getElementById('confirmCancel');
+
   const state = { authed: false, disk: false };
 
-  /* ---------- вывод ---------- */
   function scrollBottom(){ screenEl.scrollTop = screenEl.scrollHeight; }
 
   function printNode(node){
@@ -220,7 +273,6 @@
     printNode(div);
   }
 
-  /* ---------- вывод файлов ---------- */
   function makeImgBlock(src){
     const block = document.createElement('div');
     block.className = 'img-block';
@@ -271,7 +323,6 @@
     printNode(block);
   }
 
-  /* ---------- проверки доступа ---------- */
   function requireAuth(){
     if (state.authed) return true;
     err('ACCESS DENIED — authorization required');
@@ -289,8 +340,43 @@
     return true;
   }
 
-  /* ---------- роутер команд ---------- */
-  // lookup id по хешу строки
+  let pendingTarget = null;
+
+  function openConfirm(target){
+    pendingTarget = target;
+    overlay.classList.add('show');
+    setTimeout(function(){ btnOk.focus(); }, 30);
+  }
+
+  function closeConfirm(){
+    overlay.classList.remove('show');
+    pendingTarget = null;
+    inputEl.focus();
+  }
+
+  btnOk.addEventListener('click', function(){
+    const target = pendingTarget;
+    overlay.classList.remove('show');
+    pendingTarget = null;
+    if (target) window.location.href = target;
+  });
+
+  btnCancel.addEventListener('click', function(){
+    closeConfirm();
+    print('navigation cancelled', 'dim');
+  });
+
+  overlay.addEventListener('click', function(e){
+    if (e.target === overlay) closeConfirm();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if (overlay.classList.contains('show') && e.key === 'Escape'){
+      e.preventDefault();
+      closeConfirm();
+    }
+  });
+
   const idOf = s => T[hash(s)];
 
   function handle(raw){
@@ -304,12 +390,10 @@
     const args   = parts.slice(1);
     const argStr = args.join(' ');
 
-    // id команды (регистронезависимо)
     const cmdId = idOf(cmdStr.toLowerCase());
 
     switch (cmdId){
 
-      /* ====== без авторизации ====== */
       case 'c5': {
         if (idOf(argStr.toLowerCase()) === 'a1'){
           showImages([FILE.f1]);
@@ -332,13 +416,20 @@
         break;
       }
 
-      /* ====== авторизация ====== */
+      case 'c8': {
+        if (idOf(argStr.toLowerCase()) === 'a7'){
+          openConfirm('monologus.html');
+        } else {
+          err('usage: .IVEDK site');
+        }
+        break;
+      }
+
       case 'c1': {
         if (!argStr){
           err('usage: log <password>');
           break;
         }
-        // пароль сравниваем БЕЗ изменения регистра
         if (idOf(argStr) === 'p1'){
           state.authed = true;
           state.disk   = false;
@@ -351,12 +442,11 @@
         break;
       }
 
-      /* ====== только после авторизации ====== */
       case 'c2': {
         if (!requireAuth()) break;
         if (idOf(argStr.toLowerCase()) === 'a3'){
           state.disk = true;
-          ok('DISK MOUNTED — photo archive available');
+          ok('DISK 1 MOUNTED — photo archive available');
         } else {
           err('disk not found');
         }
@@ -386,9 +476,7 @@
         break;
       }
 
-      /* ====== служебные ====== */
       case undefined: {
-        // не нашли — возможно это служебное слово
         const low = cmdStr.toLowerCase();
         if (low === 'clear'){ outputEl.innerHTML = ''; break; }
         if (low === 'help'){
@@ -397,6 +485,7 @@
             '  .drawings -MIRROR',
             '  .symbols',
             '  .list basic-scientist 1',
+            '  чё?',
             '  log <password>',
             '  disk <n>',
             '  photo <id>',
@@ -414,7 +503,6 @@
     }
   }
 
-  /* ---------- ввод ---------- */
   const history = [];
   let hIndex = 0;
 
@@ -457,7 +545,6 @@
   });
   window.addEventListener('focus', function(){ inputEl.focus(); });
 
-  /* ---------- загрузка ---------- */
   dim('IAP SECURITY TERMINAL  v2.4');
   dim('link established · encryption active');
   print('');
