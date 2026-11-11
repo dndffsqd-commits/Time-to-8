@@ -244,6 +244,54 @@
 
   const state = { authed: false, disk: false };
 
+  const HIST_KEY   = 'iap_hist_v1';
+  const HIST_LIMIT = 500;
+
+  let storageOK = true;
+  try {
+    const probe = '__iap_probe__';
+    localStorage.setItem(probe, '1');
+    localStorage.removeItem(probe);
+  } catch (e) {
+    storageOK = false;
+  }
+
+  function loadHistory(){
+    if (!storageOK) return [];
+    try {
+      const raw = localStorage.getItem(HIST_KEY);
+      if (!raw) return [];
+      const arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return [];
+      return arr.filter(x => typeof x === 'string').slice(-HIST_LIMIT);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveHistory(){
+    if (!storageOK) return;
+    try {
+      const trimmed = history.slice(-HIST_LIMIT);
+      localStorage.setItem(HIST_KEY, JSON.stringify(trimmed));
+    } catch (e) {
+      if (e && e.name === 'QuotaExceededError'){
+        try {
+          history.splice(0, Math.floor(history.length / 2));
+          localStorage.setItem(HIST_KEY, JSON.stringify(history.slice(-HIST_LIMIT)));
+        } catch (_) { /* storage full or unavailable */ }
+      }
+    }
+  }
+
+  function clearStoredHistory(){
+    history.length = 0;
+    hIndex = 0;
+    if (storageOK){
+      try { localStorage.removeItem(HIST_KEY); } catch (e) {}
+    }
+  }
+
   function scrollBottom(){ screenEl.scrollTop = screenEl.scrollHeight; }
 
   function printNode(node){
@@ -479,17 +527,28 @@
       case undefined: {
         const low = cmdStr.toLowerCase();
         if (low === 'clear'){ outputEl.innerHTML = ''; break; }
+        if (low === 'history'){
+          if (!history.length){ dim('history is empty'); break; }
+          dim(history.map((h, i) => String(i + 1).padStart(3, ' ') + '  ' + h).join('\n'));
+          break;
+        }
+        if (low === 'history-clear'){
+          clearStoredHistory();
+          ok('history cleared');
+          break;
+        }
         if (low === 'help'){
           dim([
             'available commands:',
             '  .drawings -MIRROR',
             '  .symbols',
             '  .list basic-scientist 1',
-            '  чё?',
             '  log <password>',
             '  disk <n>',
             '  photo <id>',
             '  sound <id>',
+            '  history',
+            '  history-clear',
             '  clear'
           ].join('\n'));
           break;
@@ -503,14 +562,20 @@
     }
   }
 
-  const history = [];
-  let hIndex = 0;
+  const history = loadHistory();
+  let hIndex = history.length;
 
   inputEl.addEventListener('keydown', function(e){
     if (e.key === 'Enter'){
       const value = inputEl.value;
       inputEl.value = '';
-      if (value.trim()) history.push(value);
+      if (value.trim()){
+        history.push(value);
+        if (history.length > HIST_LIMIT){
+          history.splice(0, history.length - HIST_LIMIT);
+        }
+        saveHistory();
+      }
       hIndex = history.length;
       handle(value);
       return;
@@ -545,8 +610,21 @@
   });
   window.addEventListener('focus', function(){ inputEl.focus(); });
 
+  window.addEventListener('beforeunload', function(){
+    saveHistory();
+  });
+
+  document.addEventListener('visibilitychange', function(){
+    if (document.visibilityState === 'hidden') saveHistory();
+  });
+
   dim('IAP SECURITY TERMINAL  v2.4');
   dim('link established · encryption active');
+  if (!storageOK){
+    dim('storage unavailable — history will not persist');
+  } else if (history.length){
+    dim(history.length + ' command(s) restored from storage');
+  }
   print('');
   inputEl.focus();
 
